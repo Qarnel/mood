@@ -1,0 +1,63 @@
+name: eventer
+description: A new Flutter project.
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.18.6 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+
+  # localizations
+  flutter_localizations:
+    sdk: flutter
+  localization: ^2.1.0
+
+  # theme
+  easy_dynamic_theme: ^2.0.0
+
+  # router
+  go_router: ^6.0.1
+
+  # forms
+  reactive_forms: ^14.1.0
+  reactive_date_time_picker: ^0.5.0
+
+  # database
+  isar: ^3.0.5
+  isar_flutter_libs: ^3.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+  # ui
+  flutter_launcher_icons: ^0.10.0
+
+  # generate database
+  isar_generator: ^3.0.5
+
+  # generator
+  build_runner: ^2.3.3
+
+flutter_icons:
+  ios: true
+  android: true
+  image_path_ios: "assets/icons/mipmap-mdpi/ic_launcher.png"
+  image_path_android: "assets/icons/mipmap-mdpi/ic_launcher.png"
+  adaptive_icon_foreground: "assets/icons/drawable-mdpi/ic_launcher_foreground.png"
+  adaptive_icon_background: "assets/icons/drawable-mdpi/ic_launcher_background.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/i18n/
