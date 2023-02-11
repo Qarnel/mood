@@ -6,8 +6,11 @@ import 'package:localization/localization.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 import 'models/event.dart';
+import 'models/event_type.dart';
+import 'pages/event_type_list_page.dart';
+import 'pages/event_type_page.dart';
 import 'utils/theme_data.dart';
-import 'pages/home_page.dart';
+import 'pages/event_list_page.dart';
 import 'pages/event_page.dart';
 import 'pages/settings_page.dart';
 
@@ -38,12 +41,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   /// The route configuration.
   final GoRouter routerConfig = GoRouter(
-    initialLocation: HomePage.routeName,
+    initialLocation: EventListPage.routeName,
     routes: <RouteBase>[
       GoRoute(
-        path: HomePage.routeName,
+        path: EventListPage.routeName,
         builder: (BuildContext context, GoRouterState state) {
-          return const HomePage();
+          return const EventListPage();
         },
       ),
       GoRoute(
@@ -59,6 +62,22 @@ class _MyAppState extends State<MyApp> {
             return EventPage(event: state.extra as Event);
           } else {
             return const EventPage();
+          }
+        },
+      ),
+      GoRoute(
+        path: EventTypeListPage.routeName,
+        builder: (BuildContext context, GoRouterState state) {
+          return const EventTypeListPage();
+        },
+      ),
+      GoRoute(
+        path: EventTypePage.routeName,
+        builder: (BuildContext context, GoRouterState state) {
+          if (state.extra is EventType) {
+            return EventTypePage(eventType: state.extra as EventType);
+          } else {
+            return const EventTypePage();
           }
         },
       ),

@@ -1,3 +1,4 @@
+import 'package:eventer/models/event_type.dart';
 import 'package:isar/isar.dart';
 
 part 'event.g.dart';
@@ -8,17 +9,19 @@ class Event {
 
   DateTime? date;
 
-  String? type;
+  IsarLink<EventType> type = IsarLink<EventType>();
 
   int? level;
 
-  Event({this.id, this.date, this.type, this.level});
+  Event({this.id, this.date, EventType? eventType, this.level}) {
+    type.value = eventType;
+  }
 
-  Event copyWith({Id? id, DateTime? date, String? type, int? level}) {
+  Event copyWith({Id? id, DateTime? date, EventType? eventType, int? level}) {
     return Event(
       id: id ?? this.id,
       date: date ?? this.date,
-      type: type ?? this.type,
+      eventType: eventType ?? type.value,
       level: level ?? this.level,
     );
   }
@@ -27,7 +30,7 @@ class Event {
     return Event(
       id: event?.id,
       date: json.containsKey("date") ? json["date"] as DateTime : event?.date,
-      type: json.containsKey("type") ? json["type"] as String : event?.type,
+      eventType: json.containsKey("type") ? json["type"] : event?.type.value,
       level: json.containsKey("level") ? json["level"] as int : event?.level,
     );
   }
@@ -36,7 +39,7 @@ class Event {
     return Event(
       id: json["id"] as Id,
       date: DateTime.fromMillisecondsSinceEpoch(json['date'] as int),
-      type: json["type"] as String,
+      eventType: EventType.fromJson(json["eventType"]),
       level: json["level"] as int,
     );
   }
@@ -58,7 +61,7 @@ class Event {
 
   @ignore
   String get typeToString {
-    return type != null ? type! : "";
+    return type.value != null ? type.value!.toString() : "";
   }
 
   @ignore

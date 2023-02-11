@@ -26,11 +26,6 @@ const EventSchema = CollectionSchema(
       id: 1,
       name: r'level',
       type: IsarType.long,
-    ),
-    r'type': PropertySchema(
-      id: 2,
-      name: r'type',
-      type: IsarType.string,
     )
   },
   estimateSize: _eventEstimateSize,
@@ -39,7 +34,14 @@ const EventSchema = CollectionSchema(
   deserializeProp: _eventDeserializeProp,
   idName: r'id',
   indexes: {},
-  links: {},
+  links: {
+    r'type': LinkSchema(
+      id: -3071981332531985976,
+      name: r'type',
+      target: r'EventType',
+      single: true,
+    )
+  },
   embeddedSchemas: {},
   getId: _eventGetId,
   getLinks: _eventGetLinks,
@@ -53,12 +55,6 @@ int _eventEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.type;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   return bytesCount;
 }
 
@@ -70,7 +66,6 @@ void _eventSerialize(
 ) {
   writer.writeDateTime(offsets[0], object.date);
   writer.writeLong(offsets[1], object.level);
-  writer.writeString(offsets[2], object.type);
 }
 
 Event _eventDeserialize(
@@ -83,7 +78,6 @@ Event _eventDeserialize(
     date: reader.readDateTimeOrNull(offsets[0]),
     id: id,
     level: reader.readLongOrNull(offsets[1]),
-    type: reader.readStringOrNull(offsets[2]),
   );
   return object;
 }
@@ -99,8 +93,6 @@ P _eventDeserializeProp<P>(
       return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
       return (reader.readLongOrNull(offset)) as P;
-    case 2:
-      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -111,11 +103,12 @@ Id _eventGetId(Event object) {
 }
 
 List<IsarLinkBase<dynamic>> _eventGetLinks(Event object) {
-  return [];
+  return [object.type];
 }
 
 void _eventAttach(IsarCollection<dynamic> col, Id id, Event object) {
   object.id = id;
+  object.type.attach(col, col.isar.collection<EventType>(), r'type', id);
 }
 
 extension EventQueryWhereSort on QueryBuilder<Event, Event, QWhere> {
@@ -398,155 +391,24 @@ extension EventQueryFilter on QueryBuilder<Event, Event, QFilterCondition> {
       ));
     });
   }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'type',
-      ));
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'type',
-      ));
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'type',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'type',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'type',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'type',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'type',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'type',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeContains(String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'type',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeMatches(String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'type',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'type',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterFilterCondition> typeIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'type',
-        value: '',
-      ));
-    });
-  }
 }
 
 extension EventQueryObject on QueryBuilder<Event, Event, QFilterCondition> {}
 
-extension EventQueryLinks on QueryBuilder<Event, Event, QFilterCondition> {}
+extension EventQueryLinks on QueryBuilder<Event, Event, QFilterCondition> {
+  QueryBuilder<Event, Event, QAfterFilterCondition> type(
+      FilterQuery<EventType> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'type');
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> typeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'type', 0, true, 0, true);
+    });
+  }
+}
 
 extension EventQuerySortBy on QueryBuilder<Event, Event, QSortBy> {
   QueryBuilder<Event, Event, QAfterSortBy> sortByDate() {
@@ -570,18 +432,6 @@ extension EventQuerySortBy on QueryBuilder<Event, Event, QSortBy> {
   QueryBuilder<Event, Event, QAfterSortBy> sortByLevelDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'level', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterSortBy> sortByType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterSortBy> sortByTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.desc);
     });
   }
 }
@@ -622,18 +472,6 @@ extension EventQuerySortThenBy on QueryBuilder<Event, Event, QSortThenBy> {
       return query.addSortBy(r'level', Sort.desc);
     });
   }
-
-  QueryBuilder<Event, Event, QAfterSortBy> thenByType() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Event, Event, QAfterSortBy> thenByTypeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'type', Sort.desc);
-    });
-  }
 }
 
 extension EventQueryWhereDistinct on QueryBuilder<Event, Event, QDistinct> {
@@ -646,13 +484,6 @@ extension EventQueryWhereDistinct on QueryBuilder<Event, Event, QDistinct> {
   QueryBuilder<Event, Event, QDistinct> distinctByLevel() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'level');
-    });
-  }
-
-  QueryBuilder<Event, Event, QDistinct> distinctByType(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'type', caseSensitive: caseSensitive);
     });
   }
 }
@@ -673,12 +504,6 @@ extension EventQueryProperty on QueryBuilder<Event, Event, QQueryProperty> {
   QueryBuilder<Event, int?, QQueryOperations> levelProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'level');
-    });
-  }
-
-  QueryBuilder<Event, String?, QQueryOperations> typeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'type');
     });
   }
 }

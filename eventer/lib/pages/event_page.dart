@@ -23,6 +23,7 @@ class _EventPageState extends State<EventPage> {
   void initState() {
     super.initState();
     _item = widget.event;
+
   }
 
   @override

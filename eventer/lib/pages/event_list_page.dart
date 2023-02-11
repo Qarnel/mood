@@ -9,22 +9,21 @@ import '../../widgets/page_widget.dart';
 import '../models/event.dart';
 import 'event_page.dart';
 
-class HomePage extends StatefulWidget {
+class EventListPage extends StatefulWidget {
   static const String routeName = '/';
   final String title = 'Eventer';
   final double scrollDelta = 200;
   final int limitShowed = 20;
   final int limitLoad = 5;
 
-  const HomePage({super.key});
+  const EventListPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _HomePageState createState() => _HomePageState();
+  _EventListPageState createState() => _EventListPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  Stream<ListAction> stream = EventRepository().stream;
+class _EventListPageState extends State<EventListPage> {
   final ScrollController _scrollController = ScrollController();
   final List<Event> _itemList = [];
   bool _loading = false;
@@ -36,13 +35,16 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    stream.forEach((ListAction listAction) {
+    EventRepository().stream.forEach((ListAction listAction) {
       if (listAction.isDeletion) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("${listAction.id.toString()} deleted")));
-      } else {
+      } else if (listAction.isAddition) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("${listAction.id.toString()} added")));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("${listAction.id.toString()} modified")));
       }
 
       updateState();
