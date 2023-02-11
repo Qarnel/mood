@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 // ignore: implementation_imports
 import 'package:localization/src/localization_extension.dart';
 import 'package:reactive_date_time_picker/reactive_date_time_picker.dart';
@@ -92,5 +93,6 @@ class _EventFormState extends State<EventForm> {
       log("Event : $event");
     }
     EventRepository().put(event);
+    context.pop<bool>(true);
   }
 }

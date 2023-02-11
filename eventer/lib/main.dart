@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+import 'models/event.dart';
 import 'utils/theme_data.dart';
 import 'pages/home_page.dart';
 import 'pages/event_page.dart';
@@ -54,7 +55,11 @@ class _MyAppState extends State<MyApp> {
       GoRoute(
         path: EventPage.routeName,
         builder: (BuildContext context, GoRouterState state) {
-          return const EventPage();
+          if (state.extra is Event) {
+            return EventPage(event: state.extra as Event);
+          } else {
+            return const EventPage();
+          }
         },
       ),
     ],

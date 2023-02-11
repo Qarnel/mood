@@ -51,6 +51,21 @@ class Event {
   @ignore
   List<Object?> get props => [id, date, type, level];
 
+  @ignore
+  String get dateToString {
+    return date != null ? date!.toLocal().toString() : "";
+  }
+
+  @ignore
+  String get typeToString {
+    return type != null ? type! : "";
+  }
+
+  @ignore
+  String get levelToString {
+    return level != null ? level!.toString() : "";
+  }
+
   @override
   String toString() {
     return toJson().toString();
