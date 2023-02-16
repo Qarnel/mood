@@ -29,33 +29,34 @@ class _EventFormState extends State<EventForm> {
 
   final _form = FormGroup({
     "date": FormControl<DateTime>(validators: [Validators.required]),
-    "type": FormControl<EventType>(validators: [Validators.required]),
+    "type": FormControl<int>(validators: [Validators.required]),
     "level": FormControl<int>(validators: [Validators.required])
   });
 
   @override
   void initState() {
-    updateState();
+    super.initState();
 
-    _form.control("date").updateValue(widget.event?.date);
-    if (widget.event?.type.value != null) {
-      _form.control("type").updateValue(widget.event?.type.value);
-    }
-    _form.control("level").updateValue(widget.event?.level);
+    updateState();
 
     EventTypeRepository().stream.forEach((element) {
       updateState();
     });
 
-    super.initState();
+    _form.control("date").updateValue(widget.event?.date);
+    if (widget.event?.type.value?.id != null) {
+      print("value = ${widget.event?.type.value}");
+      _form.control("type").updateValue(widget.event?.type.value?.id);
+    }
+    _form.control("level").updateValue(widget.event?.level);
   }
 
   void updateState() {
     setState(() {
       _typeDropdownList = EventTypeRepository()
           .getAllSync()
-          .map((e) => DropdownMenuItem<Object?>(
-                value: e,
+          .map((e) => DropdownMenuItem<int?>(
+                value: e.id,
                 child: Text(e.nameToString),
               ))
           .toList();
@@ -123,7 +124,13 @@ class _EventFormState extends State<EventForm> {
       log("Submited : ${_form.value}");
     }
     Event? event = widget.event;
-    event = Event.copyWithJson(event, _form.value);
+    Map<String, Object?> results = {};
+    results.addAll(_form.value);
+    results["type"] = await EventTypeRepository().get(results["type"] as int);
+    if (kDebugMode) {
+      log("Results : $results");
+    }
+    event = Event.copyWithJson(event, results);
     if (kDebugMode) {
       log("Event : $event");
     }

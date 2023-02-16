@@ -13,35 +13,37 @@ class Event {
 
   int? level;
 
-  Event({this.id, this.date, EventType? eventType, this.level}) {
-    type.value = eventType;
-  }
+  Event({this.id, this.date, this.level});
 
   Event copyWith({Id? id, DateTime? date, EventType? eventType, int? level}) {
-    return Event(
+    Event event = Event(
       id: id ?? this.id,
       date: date ?? this.date,
-      eventType: eventType ?? type.value,
       level: level ?? this.level,
     );
+    event.type.value = eventType ?? type.value;
+    return event;
   }
 
   static Event copyWithJson(Event? event, Map<String, dynamic> json) {
-    return Event(
+    Event eventMerged = Event(
       id: event?.id,
       date: json.containsKey("date") ? json["date"] as DateTime : event?.date,
-      eventType: json.containsKey("type") ? json["type"] : event?.type.value,
+      
       level: json.containsKey("level") ? json["level"] as int : event?.level,
     );
+    eventMerged.type.value = json.containsKey("type") ? json["type"] : event?.type.value;
+    return eventMerged;
   }
 
   static Event fromJson(Map<String, dynamic> json) {
-    return Event(
+    Event event = Event(
       id: json["id"] as Id,
       date: DateTime.fromMillisecondsSinceEpoch(json['date'] as int),
-      eventType: EventType.fromJson(json["eventType"]),
       level: json["level"] as int,
     );
+    event.type.value = EventType.fromJson(json["eventType"]);
+    return event;
   }
 
   Map<String, dynamic> toJson() => {
@@ -61,7 +63,7 @@ class Event {
 
   @ignore
   String get typeToString {
-    return type.value != null ? type.value!.toString() : "";
+    return type.value != null ? type.value!.nameToString : "";
   }
 
   @ignore

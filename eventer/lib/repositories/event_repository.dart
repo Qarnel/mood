@@ -5,6 +5,7 @@ import 'package:isar/isar.dart';
 
 import 'isar_repository.dart';
 import '../models/event.dart';
+import '../models/event_type.dart';
 
 class ListAction {
   int id;
@@ -90,7 +91,11 @@ class EventRepository {
       return isar!.writeTxnSync<int>(() {
         // putSync saves links
         int id = isar!.events.putSync(item);
+        if (item.type.value !=null){
+        isar!.eventTypes.putSync(item.type.value!);
+        }
         item.type.saveSync();
+        
         _streamController
             .add(ListAction(id: id, isAddition: isAddition, isDeletion: false));
         return id;
