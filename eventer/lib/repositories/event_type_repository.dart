@@ -6,21 +6,21 @@ import 'package:isar/isar.dart';
 import 'isar_repository.dart';
 import '../models/event_type.dart';
 
-class ListAction {
+class EventTypeListAction {
   int id;
   bool isAddition;
   bool isDeletion;
 
-  ListAction(
+  EventTypeListAction(
       {required this.id, required this.isAddition, required this.isDeletion});
 }
 
 class EventTypeRepository {
   static final EventTypeRepository _singleton = EventTypeRepository._internal();
 
-  final StreamController<ListAction> _streamController = StreamController();
-  late Stream<ListAction> _stream;
-  Stream<ListAction> get stream => _stream;
+  final StreamController<EventTypeListAction> _streamController = StreamController();
+  late Stream<EventTypeListAction> _stream;
+  Stream<EventTypeListAction> get stream => _stream;
 
   final bool sync = true;
   Isar? isar;
@@ -88,14 +88,14 @@ class EventTypeRepository {
         // putSync saves links
         int id = isar!.eventTypes.putSync(item);
         _streamController
-            .add(ListAction(id: id, isAddition: isAddition, isDeletion: false));
+            .add(EventTypeListAction(id: id, isAddition: isAddition, isDeletion: false));
         return id;
       });
     } else {
       return isar!.writeTxn<int>(() async {
         int id = await isar!.eventTypes.put(item);
         _streamController
-            .add(ListAction(id: id, isAddition: isAddition, isDeletion: false));
+            .add(EventTypeListAction(id: id, isAddition: isAddition, isDeletion: false));
         return id;
       });
     }
@@ -113,7 +113,7 @@ class EventTypeRepository {
       return isar!.writeTxnSync<bool>(() {
         bool result = isar!.eventTypes.deleteSync(id);
         _streamController
-            .add(ListAction(id: id, isAddition: false, isDeletion: true));
+            .add(EventTypeListAction(id: id, isAddition: false, isDeletion: true));
         return result;
       });
     } else {
@@ -121,7 +121,7 @@ class EventTypeRepository {
       return isar!.writeTxn<bool>(() async {
         bool result = await isar!.eventTypes.delete(id);
         _streamController
-            .add(ListAction(id: id, isAddition: false, isDeletion: true));
+            .add(EventTypeListAction(id: id, isAddition: false, isDeletion: true));
         return result;
       });
     }

@@ -1,7 +1,5 @@
-import 'dart:developer';
+import 'dart:async';
 
-import 'package:eventer/repositories/event_type_repository.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 // ignore: implementation_imports
@@ -10,14 +8,16 @@ import 'package:reactive_date_time_picker/reactive_date_time_picker.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 import '../models/event.dart';
-import '../models/event_type.dart';
 import '../pages/event_type_list_page.dart';
 import '../repositories/event_repository.dart';
+import '../repositories/event_type_repository.dart';
 
 class EventForm extends StatefulWidget {
+  final EventTypeRepository eventTypeRepository = EventTypeRepository();
+  final EventRepository eventRepository = EventRepository();
   final Event? event;
 
-  const EventForm({this.event, Key? key}) : super(key: key);
+  EventForm({this.event, Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -25,6 +25,7 @@ class EventForm extends StatefulWidget {
 }
 
 class _EventFormState extends State<EventForm> {
+  StreamSubscription<EventTypeListAction>? _streamSubsciption;
   late List<DropdownMenuItem<Object?>> _typeDropdownList;
 
   final _form = FormGroup({
@@ -39,21 +40,26 @@ class _EventFormState extends State<EventForm> {
 
     updateState();
 
-    EventTypeRepository().stream.forEach((element) {
+    _streamSubsciption = widget.eventTypeRepository.stream.listen((element) {
       updateState();
     });
 
     _form.control("date").updateValue(widget.event?.date);
     if (widget.event?.type.value?.id != null) {
-      print("value = ${widget.event?.type.value}");
       _form.control("type").updateValue(widget.event?.type.value?.id);
     }
     _form.control("level").updateValue(widget.event?.level);
   }
 
+  @override
+  void dispose() {
+    _streamSubsciption?.cancel();
+    super.dispose();
+  }
+
   void updateState() {
     setState(() {
-      _typeDropdownList = EventTypeRepository()
+      _typeDropdownList = widget.eventTypeRepository
           .getAllSync()
           .map((e) => DropdownMenuItem<int?>(
                 value: e.id,
@@ -107,10 +113,16 @@ class _EventFormState extends State<EventForm> {
             ),
             const SizedBox(height: 10),
             ReactiveFormConsumer(
-              builder: (context, form, child) {
+              builder: (contextForm, form, child) {
                 return ElevatedButton(
-                    onPressed: form.valid ? _onSubmit : null,
-                    child: Text("Submit".i18n()));
+                  onPressed: () {
+                    if (form.valid) {
+                      _onSubmit(form);
+                      contextForm.pop();
+                    }
+                  },
+                  child: Text("Submit".i18n()),
+                );
               },
             ),
           ],
@@ -119,22 +131,13 @@ class _EventFormState extends State<EventForm> {
     );
   }
 
-  void _onSubmit() async {
-    if (kDebugMode) {
-      log("Submited : ${_form.value}");
-    }
+  Future<void> _onSubmit(form) async {
     Event? event = widget.event;
     Map<String, Object?> results = {};
-    results.addAll(_form.value);
-    results["type"] = await EventTypeRepository().get(results["type"] as int);
-    if (kDebugMode) {
-      log("Results : $results");
-    }
+    results.addAll(form.value);
+    results["eventType"] =
+        await widget.eventTypeRepository.get(results["type"] as int);
     event = Event.copyWithJson(event, results);
-    if (kDebugMode) {
-      log("Event : $event");
-    }
-    EventRepository().put(event);
-    context.pop();
+    await widget.eventRepository.put(event);
   }
 }

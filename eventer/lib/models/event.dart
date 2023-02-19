@@ -29,10 +29,10 @@ class Event {
     Event eventMerged = Event(
       id: event?.id,
       date: json.containsKey("date") ? json["date"] as DateTime : event?.date,
-      
       level: json.containsKey("level") ? json["level"] as int : event?.level,
     );
-    eventMerged.type.value = json.containsKey("type") ? json["type"] : event?.type.value;
+    eventMerged.type.value =
+        json.containsKey("eventType") ? json["eventType"] : event?.type.value;
     return eventMerged;
   }
 
@@ -49,7 +49,7 @@ class Event {
   Map<String, dynamic> toJson() => {
         "id": id.toString(),
         "date": date?.millisecondsSinceEpoch.toString(),
-        "type": type,
+        "eventType": type.value,
         "level": level.toString(),
       };
 

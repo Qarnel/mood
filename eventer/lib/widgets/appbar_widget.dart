@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 
-import '../pages/event_list_page.dart';
-
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool backButton;
@@ -18,7 +16,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: backButton
           ? BackButton(
-              onPressed: () => context.go(EventListPage.routeName),
+              onPressed: () => context.pop(),
             )
           : null,
       //toolbarHeight: 70,

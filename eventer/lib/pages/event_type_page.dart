@@ -33,7 +33,7 @@ class _EventTypePageState extends State<EventTypePage> {
     }
 
     return PageWidget(
-      title: "Event Type".i18n(),
+      title: "EventType".i18n(),
       child: EventTypeForm(eventType: _eventType),
     );
   }

@@ -7,10 +7,11 @@ import 'package:reactive_forms/reactive_forms.dart';
 
 import 'models/event.dart';
 import 'models/event_type.dart';
+import 'pages/event_list_page.dart';
 import 'pages/event_type_list_page.dart';
 import 'pages/event_type_page.dart';
+import 'pages/home_page.dart';
 import 'utils/theme_data.dart';
-import 'pages/event_list_page.dart';
 import 'pages/event_page.dart';
 import 'pages/settings_page.dart';
 
@@ -41,8 +42,14 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   /// The route configuration.
   final GoRouter routerConfig = GoRouter(
-    initialLocation: EventListPage.routeName,
+    initialLocation: HomePage.routeName,
     routes: <RouteBase>[
+      GoRoute(
+        path: HomePage.routeName,
+        builder: (BuildContext context, GoRouterState state) {
+          return const HomePage();
+        },
+      ),
       GoRoute(
         path: EventListPage.routeName,
         builder: (BuildContext context, GoRouterState state) {
@@ -68,7 +75,7 @@ class _MyAppState extends State<MyApp> {
       GoRoute(
         path: EventTypeListPage.routeName,
         builder: (BuildContext context, GoRouterState state) {
-          return const EventTypeListPage();
+          return EventTypeListPage();
         },
       ),
       GoRoute(

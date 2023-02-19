@@ -17,6 +17,6 @@ class SettingsLinkWidget extends StatelessWidget {
 
   void _actionNavigate(BuildContext context) {
     //Navigator.pushNamed(context, SettingsPage.routeName);
-    context.go(SettingsPage.routeName);
+    context.push(SettingsPage.routeName);
   }
 }

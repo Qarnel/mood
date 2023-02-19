@@ -1,9 +1,7 @@
 {
-    "QarnelBet": "QarnelBet",
-    "Register": "Register",
-    "Login": "Login",
-    "Error": "Error",
-    "Aspect": "Aspect",
-    "User": "User",
+    "Eventer": "Eventer",
+    "Events": "Events",
+    "EventType": "Event type",
+    "Statistics": "Statistics",
     "Submit": "Submit"
 }

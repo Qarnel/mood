@@ -6,6 +6,7 @@ import 'appbar_widget.dart';
 class PageWidget extends StatelessWidget {
   final String title;
   final bool backButton;
+  final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
   Widget child;
 
@@ -13,6 +14,7 @@ class PageWidget extends StatelessWidget {
       {required this.title,
       required this.child,
       this.backButton = true,
+      this.bottomNavigationBar,
       this.floatingActionButton,
       super.key});
 
@@ -28,6 +30,7 @@ class PageWidget extends StatelessWidget {
       body: SafeArea(
         child: child,
       ),
+      bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
     );
   }
