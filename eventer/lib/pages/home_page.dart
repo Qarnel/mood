@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage>
   static const int indexEventsTab = 0;
   final kTabPages = <Widget>[
     const EventListWidget(),
-    const StatisticsWidget(),
+    StatisticsWidget(),
   ];
   final kBottomNavBarItems = <BottomNavigationBarItem>[
     BottomNavigationBarItem(

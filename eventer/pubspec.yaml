@@ -33,6 +33,10 @@ dependencies:
   isar: ^3.0.5
   isar_flutter_libs: ^3.0.5
 
+  # data
+  fftea: ^1.2.0+1
+  d_chart: ^2.2.11
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
